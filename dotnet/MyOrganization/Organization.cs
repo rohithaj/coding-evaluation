@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +9,7 @@ namespace MyOrganization
     internal abstract class Organization
     {
         private Position root;
-
+        private static int _id = 0;
         public Organization()
         {
             root = CreateOrganization();
@@ -26,7 +26,27 @@ namespace MyOrganization
          */
         public Position? Hire(Name person, string title)
         {
-            //your code here
+            return Hire(person, title, root);
+        }
+        private Position? Hire(Name person, string title, Position position)
+        {
+            if (position == null)
+                return null;
+            if (position.GetTitle() == title)
+            {
+                _id++;
+                position.SetEmployee(new Employee(_id, person));
+                return position;
+            }
+            else
+            {
+                foreach (var item in position.GetDirectReports())
+                {
+                    var pos = Hire(person, title, item);
+                    if (pos != null)
+                        return pos;
+                }
+            }
             return null;
         }
 
